@@ -80,4 +80,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Meta files
-*.meta
+#*.meta
