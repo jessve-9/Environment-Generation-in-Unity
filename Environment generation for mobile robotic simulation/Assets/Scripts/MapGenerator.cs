@@ -39,18 +39,17 @@ public class MapGenerator : MonoBehaviour {
 	public TerrainType[] regions;
 
 	public void GenerateMap() {
-        float[,] combinedMap;
 		float[,] noiseGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround);
         float[,] noiseHills = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills);
 
-        combinedMap = noiseGround;
+        float[,] combinedMap = PlaneCombiner.CombineMaxValues(noiseGround, noiseHills);
 
 		Color[] colourMap = new Color[mapWidth * mapHeight];
 		for (int y = 0; y < mapHeight; y++) {
 			for (int x = 0; x < mapWidth; x++) {
 				float currentHeight = combinedMap [x, y];
 				for (int i = 0; i < regions.Length; i++) {
-					if (currentHeight <= regions [i].height * heightMultiplierGround) {
+					if (currentHeight <= regions [i].height * Mathf.Max(heightMultiplierGround, heightMultiplierHills)) {
 						colourMap [y * mapWidth + x] = regions [i].colour;
 						break;
 					}
