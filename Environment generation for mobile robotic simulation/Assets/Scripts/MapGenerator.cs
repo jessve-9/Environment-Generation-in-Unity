@@ -21,6 +21,8 @@ public class MapGenerator : MonoBehaviour {
 
     public float heightMultiplierGround;
 
+    public float heightOffsetGround;
+
 
     public float noiseScaleHills;
 
@@ -34,26 +36,50 @@ public class MapGenerator : MonoBehaviour {
 
     public float heightMultiplierHills;
 
+    public float heightOffsetHills;
+
 	public bool autoUpdate;
+
+    public float heightOffsetElevated;
 
 	public TerrainType[] regions;
 
 	public void GenerateMap() {
-		float[,] noiseGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround);
-        float[,] noiseHills = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills);
+		float[,] noiseGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
+        float[,] elevatedGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround+heightOffsetElevated);
+        float[,] noiseHills = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
 
         float[,] combinedMap = PlaneCombiner.CombineMaxValues(noiseGround, noiseHills);
+        combinedMap = PlaneCombiner.CombineMinValues(combinedMap, elevatedGround);
+        float maxHeight = float.MinValue;
 
-		Color[] colourMap = new Color[mapWidth * mapHeight];
+        //Get highets value in combinedMap
+        for (int y = 0; y < mapHeight; y++) {
+			for (int x = 0; x < mapWidth; x++) {
+				maxHeight = Mathf.Max(maxHeight, combinedMap[x,y]);
+			}
+		}
+
+		// Color[] colourMap = new Color[mapWidth * mapHeight];
+		// for (int y = 0; y < mapHeight; y++) {
+		// 	for (int x = 0; x < mapWidth; x++) {
+		// 		float currentHeight = combinedMap [x, y];
+		// 		for (int i = 0; i < regions.Length; i++) {
+		// 			if (currentHeight <= regions [i].height * maxHeight) {
+		// 				colourMap [y * mapWidth + x] = regions [i].colour;
+		// 				break;
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+        Color darkBrown = new Color(0.34f,0.21f,0.08f,1f);
+        Color lightGrey = new Color(0.62f,0.58f,0.56f,1f);
+
+        Color[] colourMap = new Color[mapWidth * mapHeight];
 		for (int y = 0; y < mapHeight; y++) {
 			for (int x = 0; x < mapWidth; x++) {
-				float currentHeight = combinedMap [x, y];
-				for (int i = 0; i < regions.Length; i++) {
-					if (currentHeight <= regions [i].height * Mathf.Max(heightMultiplierGround, heightMultiplierHills)) {
-						colourMap [y * mapWidth + x] = regions [i].colour;
-						break;
-					}
-				}
+				colourMap[y*mapWidth+x] = Color.Lerp(darkBrown, lightGrey, (combinedMap[x,y] - heightOffsetGround)/(maxHeight-heightOffsetGround));
 			}
 		}
 

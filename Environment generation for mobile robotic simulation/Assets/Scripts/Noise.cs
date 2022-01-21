@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class Noise
 {
-    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, float heightMultiplier){
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, float heightMultiplier, float heightOffset){
         float[,] noiseMap = new float[mapWidth, mapHeight];
 
 
@@ -61,6 +61,7 @@ public static class Noise
             for (int x = 0; x < mapWidth; x++){
                 noiseMap[x, y] = Mathf.InverseLerp (minNoiseHeight, maxNoiseHeight, noiseMap[x,y]);
                 noiseMap[x,y] *= heightMultiplier;
+                noiseMap[x,y] += heightOffset;
                 //Debug.Log(noiseMap[x, y]);
             }
         }

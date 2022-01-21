@@ -9,16 +9,13 @@
     <visual>
       <origin rpy="1.5707963 0 0" xyz="0 0 -2"/>
       <geometry>
-				<mesh filename="meshEXPORT.obj" scale="0.2 0.2 0.2"/>
+				<mesh filename="unityexport.obj" scale="0.2 0.2 0.2"/>
       </geometry>
-      <material name="white">
-        <color rgba="1 1 1 1"/>
-      </material>
     </visual>
     <collision concave="yes">
       <origin rpy="1.5707963 0 0" xyz="0 0 -2"/>
       <geometry>
-				<mesh filename="meshEXPORT.obj" scale="0.2 0.2 0.2"/>
+				<mesh filename="unityexport.obj" scale="0.2 0.2 0.2"/>
       </geometry>
     </collision>
   </link>
