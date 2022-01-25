@@ -21,16 +21,17 @@ public class CreateMesh : MonoBehaviour
         UpdateMesh();
     }
 
-    void CreateShape(){
+    void CreateShape(float[,] heightMap){
         vertices = new Vector3[(xSize+1)*(zSize+1)];
         for(int i = 0, z = 0; z<=zSize; z++){
             for(int x = 0; x <= xSize; x++){
-                
+
 
                     //--------------------- Insert Perlin noise y value ---------------------
-                vertices[i] = new Vector3(x, 0, z);
+                vertices[i] = new Vector3(x, heightMap, z);
                 i++;
             }   
+
         }
 
 
