@@ -89,7 +89,7 @@ public class MapGenerator : MonoBehaviour {
 		} else if (drawMode == DrawMode.ColourMap) {
 			display.DrawTexture (TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapHeight));
 		} else if (drawMode == DrawMode.Mesh) {
-			display.DrawMesh (MeshGenerator.GenerateTerrainMesh (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapHeight));
+			display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapHeight));
 
         }
 	}
