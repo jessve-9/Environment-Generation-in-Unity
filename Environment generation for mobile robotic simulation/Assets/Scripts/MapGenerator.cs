@@ -44,6 +44,12 @@ public class MapGenerator : MonoBehaviour {
 
 	public TerrainType[] regions;
 
+	[Range(0,Mathf.PI/4)]
+	public float tiltZ;
+
+	[Range(0,Mathf.PI/4)]
+	public float tiltX;
+
 	public void GenerateMap() {
 		float[,] noiseGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
         float[,] elevatedGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround+heightOffsetElevated);
@@ -52,6 +58,8 @@ public class MapGenerator : MonoBehaviour {
         float[,] combinedMap = PlaneCombiner.CombineMaxValues(noiseGround, noiseHills);
         combinedMap = PlaneCombiner.CombineMinValues(combinedMap, elevatedGround);
         float maxHeight = float.MinValue;
+		combinedMap = PlaneCombiner.CreateTiltZ(combinedMap, tiltZ);
+		combinedMap = PlaneCombiner.CreateTiltX(combinedMap, tiltX);
 
         //Get highets value in combinedMap
         for (int y = 0; y < mapHeight; y++) {
