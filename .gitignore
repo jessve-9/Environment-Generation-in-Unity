@@ -80,9 +80,9 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # unity export files
-.png
-*.obj
-*.mtl
+#.png
+#*.obj
+#*.mtl
 
 # Carl files
 /CarlsFolder
