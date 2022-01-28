@@ -42,7 +42,7 @@ public class MapGenerator : MonoBehaviour {
 
     public float heightOffsetElevated;
 
-	public TerrainType[] regions;
+	//public TerrainType[] regions;
 
 	[Range(0,45)]
 	public float tiltZ;
@@ -80,14 +80,8 @@ public class MapGenerator : MonoBehaviour {
 		}
 
 		MapDisplay display = FindObjectOfType<MapDisplay> ();
-		if (drawMode == DrawMode.NoiseMap) {
-			display.DrawTexture (TextureGenerator.TextureFromHeightMap (combinedMap));
-		} else if (drawMode == DrawMode.ColourMap) {
-			display.DrawTexture (TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapLength));
-		} else if (drawMode == DrawMode.Mesh) {
-			display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapLength));
+		display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapLength));
 
-        }
 	}
 
 	void OnValidate() {
@@ -112,9 +106,11 @@ public class MapGenerator : MonoBehaviour {
 	}
 }
 
+/*
 [System.Serializable]
 public struct TerrainType {
 	public string name;
 	public float height;
 	public Color colour;
 }
+*/
