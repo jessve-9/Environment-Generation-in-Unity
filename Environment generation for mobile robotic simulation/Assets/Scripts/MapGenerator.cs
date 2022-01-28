@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class MapGenerator : MonoBehaviour {
 
@@ -45,17 +46,28 @@ public class MapGenerator : MonoBehaviour {
 	public TerrainType[] regions;
 
 	public void GenerateMap() {
-		float[,] noiseGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
-        float[,] elevatedGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround+heightOffsetElevated);
-        float[,] noiseHills = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
+
+		if(mapHeight <= 0){
+			mapHeight = 1;
+		}
+		else if(mapWidth <= 0){
+			mapWidth = 1;
+		}
+
+		int scaledMapHeight = Convert.ToInt32(mapHeight * 0.6);		//Fixes scale from unity to pybullet. Now it is 1:1 meters
+		int scaledMapWidth = Convert.ToInt32(mapWidth * 0.6);
+
+		float[,] noiseGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
+        float[,] elevatedGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround+heightOffsetElevated);
+        float[,] noiseHills = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapHeight, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
 
         float[,] combinedMap = PlaneCombiner.CombineMaxValues(noiseGround, noiseHills);
         combinedMap = PlaneCombiner.CombineMinValues(combinedMap, elevatedGround);
         float maxHeight = float.MinValue;
 
         //Get highets value in combinedMap
-        for (int y = 0; y < mapHeight; y++) {
-			for (int x = 0; x < mapWidth; x++) {
+        for (int y = 0; y < scaledMapHeight; y++) {
+			for (int x = 0; x < scaledMapWidth; x++) {
 				maxHeight = Mathf.Max(maxHeight, combinedMap[x,y]);
 			}
 		}
@@ -76,10 +88,10 @@ public class MapGenerator : MonoBehaviour {
         Color darkBrown = new Color(0.34f,0.21f,0.08f,1f);
         Color lightGrey = new Color(0.62f,0.58f,0.56f,1f);
 
-        Color[] colourMap = new Color[mapWidth * mapHeight];
-		for (int y = 0; y < mapHeight; y++) {
-			for (int x = 0; x < mapWidth; x++) {
-				colourMap[y*mapWidth+x] = Color.Lerp(darkBrown, lightGrey, (combinedMap[x,y] - heightOffsetGround)/(maxHeight-heightOffsetGround));
+        Color[] colourMap = new Color[scaledMapWidth * scaledMapHeight];
+		for (int y = 0; y < scaledMapHeight; y++) {
+			for (int x = 0; x < scaledMapWidth; x++) {
+				colourMap[y*scaledMapWidth+x] = Color.Lerp(darkBrown, lightGrey, (combinedMap[x,y] - heightOffsetGround)/(maxHeight-heightOffsetGround));
 			}
 		}
 
@@ -87,9 +99,9 @@ public class MapGenerator : MonoBehaviour {
 		if (drawMode == DrawMode.NoiseMap) {
 			display.DrawTexture (TextureGenerator.TextureFromHeightMap (combinedMap));
 		} else if (drawMode == DrawMode.ColourMap) {
-			display.DrawTexture (TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapHeight));
+			display.DrawTexture (TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapHeight));
 		} else if (drawMode == DrawMode.Mesh) {
-			display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapHeight));
+			display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapHeight));
 
         }
 	}
