@@ -7,7 +7,7 @@ public class MapGenerator : MonoBehaviour {
 	public DrawMode drawMode;
 
 	public int mapWidth;
-	public int mapHeight;
+	public int mapLength;
 
 	public float noiseScaleGround;
 
@@ -51,9 +51,9 @@ public class MapGenerator : MonoBehaviour {
 	public float tiltX;
 
 	public void GenerateMap() {
-		float[,] noiseGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
-        float[,] elevatedGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround+heightOffsetElevated);
-        float[,] noiseHills = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
+		float[,] noiseGround = Noise.GenerateNoiseMap (mapWidth, mapLength, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
+        float[,] elevatedGround = Noise.GenerateNoiseMap (mapWidth, mapLength, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround+heightOffsetElevated);
+        float[,] noiseHills = Noise.GenerateNoiseMap (mapWidth, mapLength, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
 
 		noiseHills = PlaneCombiner.PlaneTexture(noiseHills, noiseGround);
         float[,] combinedMap = PlaneCombiner.CombineMaxValues(noiseGround, noiseHills);
@@ -63,32 +63,19 @@ public class MapGenerator : MonoBehaviour {
 		combinedMap = PlaneCombiner.CreateTiltX(combinedMap, tiltX);
 
         //Get highets value in combinedMap
-        for (int y = 0; y < mapHeight; y++) {
+        for (int z = 0; z < mapLength; z++) {
 			for (int x = 0; x < mapWidth; x++) {
-				maxHeight = Mathf.Max(maxHeight, combinedMap[x,y]);
+				maxHeight = Mathf.Max(maxHeight, combinedMap[x,z]);
 			}
 		}
 
-		// Color[] colourMap = new Color[mapWidth * mapHeight];
-		// for (int y = 0; y < mapHeight; y++) {
-		// 	for (int x = 0; x < mapWidth; x++) {
-		// 		float currentHeight = combinedMap [x, y];
-		// 		for (int i = 0; i < regions.Length; i++) {
-		// 			if (currentHeight <= regions [i].height * maxHeight) {
-		// 				colourMap [y * mapWidth + x] = regions [i].colour;
-		// 				break;
-		// 			}
-		// 		}
-		// 	}
-		// }
-
         Color darkBrown = new Color(0.34f,0.21f,0.08f,1f);
-        Color lightGrey = new Color(0.62f,0.58f,0.56f,1f);
+        Color grey = new Color(0.24f,0.24f,0.24f,1f);
 
-        Color[] colourMap = new Color[mapWidth * mapHeight];
-		for (int y = 0; y < mapHeight; y++) {
+        Color[] colourMap = new Color[mapWidth * mapLength];
+		for (int z = 0; z < mapLength; z++) {
 			for (int x = 0; x < mapWidth; x++) {
-				colourMap[y*mapWidth+x] = Color.Lerp(darkBrown, lightGrey, (combinedMap[x,y] - heightOffsetGround)/(maxHeight-heightOffsetGround));
+				colourMap[z*mapWidth+x] = Color.Lerp(darkBrown, grey, (combinedMap[x,z] - heightOffsetGround)/(maxHeight-heightOffsetGround));
 			}
 		}
 
@@ -96,9 +83,9 @@ public class MapGenerator : MonoBehaviour {
 		if (drawMode == DrawMode.NoiseMap) {
 			display.DrawTexture (TextureGenerator.TextureFromHeightMap (combinedMap));
 		} else if (drawMode == DrawMode.ColourMap) {
-			display.DrawTexture (TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapHeight));
+			display.DrawTexture (TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapLength));
 		} else if (drawMode == DrawMode.Mesh) {
-			display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapHeight));
+			display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, mapWidth, mapLength));
 
         }
 	}
@@ -107,8 +94,8 @@ public class MapGenerator : MonoBehaviour {
 		if (mapWidth < 1) {
 			mapWidth = 1;
 		}
-		if (mapHeight < 1) {
-			mapHeight = 1;
+		if (mapLength < 1) {
+			mapLength = 1;
 		}
 		if (lacunarityGround < 1) {
 			lacunarityGround = 1;
