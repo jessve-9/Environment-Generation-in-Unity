@@ -44,10 +44,10 @@ public class MapGenerator : MonoBehaviour {
 
 	public TerrainType[] regions;
 
-	[Range(0,Mathf.PI/4)]
+	[Range(0,45)]
 	public float tiltZ;
 
-	[Range(0,Mathf.PI/4)]
+	[Range(0,45)]
 	public float tiltX;
 
 	public void GenerateMap() {

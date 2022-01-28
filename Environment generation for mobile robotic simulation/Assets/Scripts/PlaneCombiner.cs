@@ -31,7 +31,7 @@ public class PlaneCombiner
         int width = plane1.GetLength (0);
         int length = plane1.GetLength (1);
         float[,] combine = new float[width, length];
-        float tiltHeight = Mathf.Tan((tilt)*(Mathf.PI/180))*length;
+        float tiltHeight = Mathf.Tan(tilt*Mathf.PI/180f);
         for(int z = 0; z < length; z++){
             for(int x = 0; x < width; x++){
                 combine[x,z] = plane1[x,z]+z*tiltHeight;
@@ -44,7 +44,7 @@ public class PlaneCombiner
         int width = plane1.GetLength (0);
         int length = plane1.GetLength (1);
         float[,] combine = new float[width, length];
-        float tiltHeight = Mathf.Tan((tilt)*(Mathf.PI/180))*width;
+        float tiltHeight = Mathf.Tan(tilt*Mathf.PI/180f);
         for(int z = 0; z < length; z++){
             for(int x = 0; x < width; x++){
                 combine[x,z] = plane1[x,z]+x*tiltHeight;
