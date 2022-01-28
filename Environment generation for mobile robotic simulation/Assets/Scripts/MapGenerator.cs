@@ -55,6 +55,7 @@ public class MapGenerator : MonoBehaviour {
         float[,] elevatedGround = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround+heightOffsetElevated);
         float[,] noiseHills = Noise.GenerateNoiseMap (mapWidth, mapHeight, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
 
+		noiseHills = PlaneCombiner.PlaneTexture(noiseHills, noiseGround);
         float[,] combinedMap = PlaneCombiner.CombineMaxValues(noiseGround, noiseHills);
         combinedMap = PlaneCombiner.CombineMinValues(combinedMap, elevatedGround);
         float maxHeight = float.MinValue;

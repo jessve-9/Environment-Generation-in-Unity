@@ -52,4 +52,27 @@ public class PlaneCombiner
         }
         return combine;
     }
+
+    public static float[,] PlaneTexture(float[,] plane, float[,] texture){
+        int width = plane.GetLength (0);
+        int length = plane.GetLength (1);
+        float[,] combine = new float[width, length];
+
+        float maxHeightTexure = float.MinValue;
+        for (int y = 0; y < length; y++) {
+			for (int x = 0; x < width; x++) {
+				maxHeightTexure = Mathf.Max(maxHeightTexure, texture[x,y]);
+			}
+		}
+        float textureHeightOffset = maxHeightTexure/2;
+
+        for(int z = 0; z < length; z++){
+            for(int x = 0; x < width; x++){
+                combine[x,z] = plane[x,z] + texture[x,z] - textureHeightOffset;
+            }
+        }
+        return combine;
+    }
+
+
 }
