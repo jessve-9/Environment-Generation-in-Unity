@@ -74,5 +74,17 @@ public class PlaneCombiner
         return combine;
     }
 
+    public static float[,] PlaneElevated(float[,] plane, float elevationHeight){
+        int width = plane.GetLength (0);
+        int length = plane.GetLength (1);
+        float[,] combine = new float[width, length];
+        for(int z = 0; z < length; z++){
+            for(int x = 0; x < width; x++){
+                combine[x,z] = plane[x,z]+elevationHeight;
+            }
+        }
+        return combine;
+    }
+
 
 }
