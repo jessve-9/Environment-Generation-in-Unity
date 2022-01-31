@@ -83,3 +83,6 @@ crashlytics-build.properties
 .png
 *.obj
 *.mtl
+
+# Carl files
+/CarlsFolder
