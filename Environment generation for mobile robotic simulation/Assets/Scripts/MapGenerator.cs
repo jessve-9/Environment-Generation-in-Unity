@@ -63,7 +63,7 @@ public class MapGenerator : MonoBehaviour {
 		int scaledMapLength = Convert.ToInt32(mapLength * 0.6);		//Fixes scale from unity to pybullet. Now it is 1:1 meters
 		int scaledMapWidth = Convert.ToInt32(mapWidth * 0.6);
 
-		float[,] noiseGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLegth, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
+		float[,] noiseGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLength, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
         float[,] elevatedGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLength, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround+heightOffsetElevated);
         float[,] noiseHills = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLength, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
 
@@ -87,12 +87,12 @@ public class MapGenerator : MonoBehaviour {
         Color[] colourMap = new Color[scaledMapWidth * scaledMapLength];
 		for (int z = 0; z < scaledMapLength; z++) {
 			for (int x = 0; x < scaledMapWidth; x++) {
-				colourMap[z*scaledMapWidth+x] = Color.Lerp(darkBrown, lightGrey, (combinedMap[x,z] - heightOffsetGround)/(maxHeight-heightOffsetGround));
+				colourMap[z*scaledMapWidth+x] = Color.Lerp(darkBrown, grey, (combinedMap[x,z] - heightOffsetGround)/(maxHeight-heightOffsetGround));
 			}
 		}
 
 		MapDisplay display = FindObjectOfType<MapDisplay> ();
-		display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapHeight));
+		display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength));
 
 	}
 
