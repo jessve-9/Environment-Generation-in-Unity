@@ -1,0 +1,8 @@
+newmtl Mat Mat
+illum 2
+
+newmtl Mesh Mat
+Kd 1 1 1
+map_Kd C:\Users\jespe\OneDrive\Dokument\D0020E\D0020EProj\Pybullet files\.png
+illum 2
+
