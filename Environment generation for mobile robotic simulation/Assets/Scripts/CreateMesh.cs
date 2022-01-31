@@ -7,18 +7,18 @@ public static class CreateMesh
 {
     public static MeshData CreateShape(float[,] heightMap){
         int width = heightMap.GetLength (0);
-		int height = heightMap.GetLength (1);
+		int length = heightMap.GetLength (1);
 
         float topLeftX = (width - 1) / -2f;
-		float topLeftZ = (height - 1) / 2f;
+		float topLeftZ = (length - 1) / 2f;
 
-        MeshData meshData = new MeshData (width, height);
-        for(int i = 0, z = 0; z<height; z++){
+        MeshData meshData = new MeshData (width, length);
+        for(int i = 0, z = 0; z<length; z++){
             for(int x = 0; x < width; x++){
                 meshData.vertices[i] = new Vector3(topLeftX+x, heightMap[x,z], topLeftZ-z);
-                meshData.uvs [i] = new Vector2 (x / (float)width, z / (float)height);
+                meshData.uvs [i] = new Vector2 (x / (float)width, z / (float)length);
 
-                if (x < width - 1 && z < height - 1) {
+                if (x < width - 1 && z < length - 1) {
                     meshData.AddTriangle (i, i + width + 1, i + width);
 					meshData.AddTriangle (i + width + 1, i, i + 1);
                 }

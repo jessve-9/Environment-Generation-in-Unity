@@ -8,7 +8,7 @@ public class MapGenerator : MonoBehaviour {
 	public DrawMode drawMode;
 
 	public int mapWidth;
-	public int mapHeight;
+	public int mapLength;
 
 	public float noiseScaleGround;
 
@@ -43,75 +43,65 @@ public class MapGenerator : MonoBehaviour {
 
     public float heightOffsetElevated;
 
-	public TerrainType[] regions;
+	//public TerrainType[] regions;
+
+	[Range(0,45)]
+	public float tiltZ;
+
+	[Range(0,45)]
+	public float tiltX;
 
 	public void GenerateMap() {
 
-		if(mapHeight <= 0){
-			mapHeight = 1;
+		if(mapLength <= 0){
+			mapLength = 1;
 		}
 		else if(mapWidth <= 0){
 			mapWidth = 1;
 		}
 
-		int scaledMapHeight = Convert.ToInt32(mapHeight * 0.6);		//Fixes scale from unity to pybullet. Now it is 1:1 meters
+		int scaledMapLength = Convert.ToInt32(mapLength * 0.6);		//Fixes scale from unity to pybullet. Now it is 1:1 meters
 		int scaledMapWidth = Convert.ToInt32(mapWidth * 0.6);
 
-		float[,] noiseGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
-        float[,] elevatedGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapHeight, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround+heightOffsetElevated);
-        float[,] noiseHills = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapHeight, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
+		float[,] noiseGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLegth, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
+        float[,] elevatedGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLength, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround+heightOffsetElevated);
+        float[,] noiseHills = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLength, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
 
+		noiseHills = PlaneCombiner.PlaneTexture(noiseHills, noiseGround);
         float[,] combinedMap = PlaneCombiner.CombineMaxValues(noiseGround, noiseHills);
         combinedMap = PlaneCombiner.CombineMinValues(combinedMap, elevatedGround);
         float maxHeight = float.MinValue;
+		combinedMap = PlaneCombiner.CreateTiltZ(combinedMap, tiltZ);
+		combinedMap = PlaneCombiner.CreateTiltX(combinedMap, tiltX);
 
         //Get highets value in combinedMap
-        for (int y = 0; y < scaledMapHeight; y++) {
+    for (int z = 0; z < scaledMapLength; z++) {
 			for (int x = 0; x < scaledMapWidth; x++) {
-				maxHeight = Mathf.Max(maxHeight, combinedMap[x,y]);
+				maxHeight = Mathf.Max(maxHeight, combinedMap[x,z]); 
 			}
 		}
 
-		// Color[] colourMap = new Color[mapWidth * mapHeight];
-		// for (int y = 0; y < mapHeight; y++) {
-		// 	for (int x = 0; x < mapWidth; x++) {
-		// 		float currentHeight = combinedMap [x, y];
-		// 		for (int i = 0; i < regions.Length; i++) {
-		// 			if (currentHeight <= regions [i].height * maxHeight) {
-		// 				colourMap [y * mapWidth + x] = regions [i].colour;
-		// 				break;
-		// 			}
-		// 		}
-		// 	}
-		// }
-
         Color darkBrown = new Color(0.34f,0.21f,0.08f,1f);
-        Color lightGrey = new Color(0.62f,0.58f,0.56f,1f);
+        Color grey = new Color(0.24f,0.24f,0.24f,1f);
 
-        Color[] colourMap = new Color[scaledMapWidth * scaledMapHeight];
-		for (int y = 0; y < scaledMapHeight; y++) {
+        Color[] colourMap = new Color[scaledMapWidth * scaledMapLength];
+		for (int z = 0; z < scaledMapLength; z++) {
 			for (int x = 0; x < scaledMapWidth; x++) {
-				colourMap[y*scaledMapWidth+x] = Color.Lerp(darkBrown, lightGrey, (combinedMap[x,y] - heightOffsetGround)/(maxHeight-heightOffsetGround));
+				colourMap[z*scaledMapWidth+x] = Color.Lerp(darkBrown, lightGrey, (combinedMap[x,z] - heightOffsetGround)/(maxHeight-heightOffsetGround));
 			}
 		}
 
 		MapDisplay display = FindObjectOfType<MapDisplay> ();
-		if (drawMode == DrawMode.NoiseMap) {
-			display.DrawTexture (TextureGenerator.TextureFromHeightMap (combinedMap));
-		} else if (drawMode == DrawMode.ColourMap) {
-			display.DrawTexture (TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapHeight));
-		} else if (drawMode == DrawMode.Mesh) {
-			display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapHeight));
+		display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapHeight));
 
-        }
 	}
 
 	void OnValidate() {
 		if (mapWidth < 1) {
 			mapWidth = 1;
 		}
-		if (mapHeight < 1) {
-			mapHeight = 1;
+		if (mapLength < 1) {
+			mapLength = 1;
 		}
 		if (lacunarityGround < 1) {
 			lacunarityGround = 1;
@@ -128,9 +118,11 @@ public class MapGenerator : MonoBehaviour {
 	}
 }
 
+/*
 [System.Serializable]
 public struct TerrainType {
 	public string name;
 	public float height;
 	public Color colour;
 }
+*/
