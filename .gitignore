@@ -80,9 +80,9 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # unity export files
-.png
-*.obj
-*.mtl
+PybulletFiles/.png
+PybulletFiles/*.obj
+PybulletFiles/*.mtl
 
 # Carl files
 /CarlsFolder
