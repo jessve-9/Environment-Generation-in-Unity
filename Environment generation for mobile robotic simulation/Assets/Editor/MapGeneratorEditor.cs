@@ -19,5 +19,10 @@ public class MapGeneratorEditor : Editor
         if (GUILayout.Button ("Generate")){
             mapGen.GenerateMap();
         }
+
+        if (GUILayout.Button ("Randomize")){
+            mapGen.RandomizeOnMapType();
+            mapGen.GenerateMap();
+        }
     }
 }

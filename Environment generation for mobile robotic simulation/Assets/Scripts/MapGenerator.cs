@@ -2,13 +2,12 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-public class MapGenerator : MonoBehaviour {
+public class MapGenerator : MonoBehaviour { 
+	public enum MapType {ShortCycle, BigPictureView};
+	public MapType mapType;
 
-	public enum DrawMode {NoiseMap, ColourMap, Mesh};
-	public DrawMode drawMode;
-
-	public int mapWidth;
-	public int mapLength;
+	int mapWidth = 250;
+	int mapLength = 250;
 
 	public float noiseScaleGround;
 
@@ -66,7 +65,7 @@ public class MapGenerator : MonoBehaviour {
 		float[,] noiseGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLength, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
         float[,] noiseHills = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLength, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
 
-		float[,] elevatedGround = PlaneCompine.PlaneElevated(noiseGround, heightOffsetElevated);
+		float[,] elevatedGround = PlaneCombiner.PlaneElevated(noiseGround, heightOffsetElevated);
 		noiseHills = PlaneCombiner.PlaneTexture(noiseHills, noiseGround);
         float[,] combinedMap = PlaneCombiner.CombineMaxValues(noiseGround, noiseHills);
         combinedMap = PlaneCombiner.CombineMinValues(combinedMap, elevatedGround);
@@ -75,7 +74,7 @@ public class MapGenerator : MonoBehaviour {
 		combinedMap = PlaneCombiner.CreateTiltX(combinedMap, tiltX);
 
         //Get highets value in combinedMap
-    for (int z = 0; z < scaledMapLength; z++) {
+		for (int z = 0; z < scaledMapLength; z++) {
 			for (int x = 0; x < scaledMapWidth; x++) {
 				maxHeight = Mathf.Max(maxHeight, combinedMap[x,z]); 
 			}
@@ -114,6 +113,35 @@ public class MapGenerator : MonoBehaviour {
 		}
 		if (octavesHills < 0) {
 			octavesHills = 0;
+		}
+	}
+
+	public void RandomizeOnMapType() {
+		if (mapType == MapType.ShortCycle){
+			mapWidth = 250;
+			mapLength = 250;
+
+			System.Random rnd = new System.Random();
+			//Ground
+			noiseScaleGround = 0.06f;
+			octavesGround = 8;
+			persistanceGround = 1f;
+			lacunarityGround = 1.03f;
+			seedGround = rnd.Next(0, 99999);
+			heightMultiplierGround = 0.2f;
+			heightOffsetGround = 0f;
+
+			//Elevated ground
+			heightOffsetElevated = 12f;
+
+			//Hills
+			noiseScaleHills = 120f;
+			octavesHills = 4;
+			persistanceHills = 0.12f;
+			lacunarityHills = 3.2f;
+			seedHills = rnd.Next(0, 99999);
+			heightMultiplierHills = 40f;
+			heightOffsetHills = -23f;
 		}
 	}
 }
