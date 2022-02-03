@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlaneCombiner
+public class PlaneFunctions
 {
     public static float[,] CombineMaxValues(float[,] plane1, float[,] plane2){
         int width = plane1.GetLength (0);
@@ -81,6 +81,25 @@ public class PlaneCombiner
         for(int z = 0; z < length; z++){
             for(int x = 0; x < width; x++){
                 combine[x,z] = plane[x,z]+elevationHeight;
+            }
+        }
+        return combine;
+    }
+
+    public static float[,] AddFalloffMap(float[,] plane, float[,] fallofMap){
+        int width = plane.GetLength (0);
+        int length = plane.GetLength (1);
+        float[,] combine = new float[width, length];
+        float maxHeight = float.MinValue;
+        for(int z = 0; z < length; z++){
+            for(int x = 0; x < width; x++){
+                maxHeight = Mathf.Max(maxHeight, plane[x,z]); 
+            }
+        }
+
+        for(int z = 0; z < length; z++){
+            for(int x = 0; x < width; x++){
+                combine[x,z] = plane[x,z] - fallofMap[x,z]*maxHeight;
             }
         }
         return combine;
