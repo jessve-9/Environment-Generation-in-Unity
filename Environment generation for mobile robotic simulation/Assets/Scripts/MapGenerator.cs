@@ -69,7 +69,9 @@ public class MapGenerator : MonoBehaviour {
         float[,] noiseHills = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLength, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
 
 		float[,] elevatedGround = PlaneFunctions.PlaneElevated(noiseGround, heightOffsetElevated);
-		noiseHills = PlaneFunctions.AddFalloffMap(noiseHills, falloffMap);
+		if (useFalloff){
+			noiseHills = PlaneFunctions.AddFalloffMap(noiseHills, falloffMap);
+		}
 		noiseHills = PlaneFunctions.PlaneTexture(noiseHills, noiseGround);
         float[,] combinedMap = PlaneFunctions.CombineMaxValues(noiseGround, noiseHills);
         combinedMap = PlaneFunctions.CombineMinValues(combinedMap, elevatedGround);
@@ -130,23 +132,23 @@ public class MapGenerator : MonoBehaviour {
 			System.Random rnd = new System.Random();
 			//Ground
 			noiseScaleGround = 0.06f;
-			octavesGround = 8;
-			persistanceGround = 1f;
-			lacunarityGround = 1.03f;
+			octavesGround = 5;
+			persistanceGround = 0.77f;
+			lacunarityGround = 4f;
 			seedGround = rnd.Next(0, 99999);
-			heightMultiplierGround = 0.2f;
+			heightMultiplierGround = 0.8f;
 			heightOffsetGround = 0f;
 
 			//Elevated ground
-			heightOffsetElevated = 12f;
+			heightOffsetElevated = 13f;
 
 			//Hills
-			noiseScaleHills = 120f;
+			noiseScaleHills = 100f;
 			octavesHills = 4;
-			persistanceHills = 0.12f;
-			lacunarityHills = 3.2f;
+			persistanceHills = 0.11f;
+			lacunarityHills = 4.45f;
 			seedHills = rnd.Next(0, 99999);
-			heightMultiplierHills = 40f;
+			heightMultiplierHills = 50f;
 			heightOffsetHills = -23f;
 		}
 	}
