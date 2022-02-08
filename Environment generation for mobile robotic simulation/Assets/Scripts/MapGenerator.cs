@@ -50,6 +50,9 @@ public class MapGenerator : MonoBehaviour {
 	[Range(0,45)]
 	public float tiltX;
 
+	public bool useFalloff;
+	float[,] falloffMap;
+
 	public void GenerateMap() {
 
 		if(mapLength <= 0){
@@ -59,19 +62,22 @@ public class MapGenerator : MonoBehaviour {
 			mapWidth = 1;
 		}
 
-		int scaledMapLength = Convert.ToInt32(mapLength * 0.6);		//Fixes scale from unity to pybullet. Now it is 1:1 meters
-		int scaledMapWidth = Convert.ToInt32(mapWidth * 0.6);
+		int scaledMapLength = Convert.ToInt32(mapLength * 1);		//Fixes scale from unity to pybullet. Now it is 1:1 meters
+		int scaledMapWidth = Convert.ToInt32(mapWidth * 1);
 
 		float[,] noiseGround = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLength, seedGround, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, offsetGround, heightMultiplierGround, heightOffsetGround);
         float[,] noiseHills = Noise.GenerateNoiseMap (scaledMapWidth, scaledMapLength, seedHills, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, offsetHills, heightMultiplierHills, heightOffsetHills);
 
-		float[,] elevatedGround = PlaneCombiner.PlaneElevated(noiseGround, heightOffsetElevated);
-		noiseHills = PlaneCombiner.PlaneTexture(noiseHills, noiseGround);
-        float[,] combinedMap = PlaneCombiner.CombineMaxValues(noiseGround, noiseHills);
-        combinedMap = PlaneCombiner.CombineMinValues(combinedMap, elevatedGround);
+		float[,] elevatedGround = PlaneFunctions.PlaneElevated(noiseGround, heightOffsetElevated);
+		if (useFalloff){
+			noiseHills = PlaneFunctions.AddFalloffMap(noiseHills, falloffMap);
+		}
+		noiseHills = PlaneFunctions.PlaneTexture(noiseHills, noiseGround);
+        float[,] combinedMap = PlaneFunctions.CombineMaxValues(noiseGround, noiseHills);
+        combinedMap = PlaneFunctions.CombineMinValues(combinedMap, elevatedGround);
         float maxHeight = float.MinValue;
-		combinedMap = PlaneCombiner.CreateTiltZ(combinedMap, tiltZ);
-		combinedMap = PlaneCombiner.CreateTiltX(combinedMap, tiltX);
+		combinedMap = PlaneFunctions.CreateTiltZ(combinedMap, tiltZ);
+		combinedMap = PlaneFunctions.CreateTiltX(combinedMap, tiltX);
 
         //Get highets value in combinedMap
 		for (int z = 0; z < scaledMapLength; z++) {
@@ -114,6 +120,8 @@ public class MapGenerator : MonoBehaviour {
 		if (octavesHills < 0) {
 			octavesHills = 0;
 		}
+
+		falloffMap = FalloffGenerator.GenerateFalloffMap(mapWidth, mapLength);
 	}
 
 	public void RandomizeOnMapType() {
@@ -124,23 +132,23 @@ public class MapGenerator : MonoBehaviour {
 			System.Random rnd = new System.Random();
 			//Ground
 			noiseScaleGround = 0.06f;
-			octavesGround = 8;
-			persistanceGround = 1f;
-			lacunarityGround = 1.03f;
+			octavesGround = 5;
+			persistanceGround = 0.77f;
+			lacunarityGround = 4f;
 			seedGround = rnd.Next(0, 99999);
-			heightMultiplierGround = 0.2f;
+			heightMultiplierGround = 0.8f;
 			heightOffsetGround = 0f;
 
 			//Elevated ground
-			heightOffsetElevated = 12f;
+			heightOffsetElevated = 13f;
 
 			//Hills
-			noiseScaleHills = 120f;
+			noiseScaleHills = 100f;
 			octavesHills = 4;
-			persistanceHills = 0.12f;
-			lacunarityHills = 3.2f;
+			persistanceHills = 0.11f;
+			lacunarityHills = 4.45f;
 			seedHills = rnd.Next(0, 99999);
-			heightMultiplierHills = 40f;
+			heightMultiplierHills = 50f;
 			heightOffsetHills = -23f;
 		}
 	}
