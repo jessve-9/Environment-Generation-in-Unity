@@ -86,3 +86,6 @@ PybulletFiles/*.mtl
 
 # Carl files
 /CarlsFolder
+
+/Environment\ generation\ for\ mobile\ robotic\ simulation/Assets/CarlsFolder
+/Environment\ generation\ for\ mobile\ robotic\ simulation/Assets/CarlsFolder.meta

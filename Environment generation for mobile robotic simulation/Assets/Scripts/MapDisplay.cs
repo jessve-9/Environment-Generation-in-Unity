@@ -7,6 +7,7 @@ public class MapDisplay : MonoBehaviour
     public Renderer textureRender;
     public MeshFilter meshFilter;
     public MeshRenderer meshRenderer;
+    public MeshCollider meshCollider;
 
     // public void DrawNoiseMap(float[,] noiseMap){
     //     int width = noiseMap.GetLength(0);
@@ -37,5 +38,7 @@ public class MapDisplay : MonoBehaviour
     public void DrawMesh(MeshData meshData, Texture2D texture){
         meshFilter.sharedMesh = meshData.CreateMesh();
         meshRenderer.sharedMaterial.mainTexture = texture;
+        meshCollider.sharedMesh = null;
+        meshCollider.sharedMesh = meshFilter.sharedMesh;
     }    
 }
