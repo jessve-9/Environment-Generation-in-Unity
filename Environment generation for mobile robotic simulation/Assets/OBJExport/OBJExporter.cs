@@ -110,6 +110,14 @@ public class OBJExporter : ScriptableWizard
         end:;
     }
 
+    public void ExportAuto()
+    {
+        string lastPath = EditorPrefs.GetString("a4_OBJExport_lastPath", "");
+        string lastFileName = EditorPrefs.GetString("a4_OBJExport_lastFile", "unityexport.obj");
+        string total = lastPath+"/"+lastFileName;
+        Export(total);
+    }
+
     void Export(string exportPath)
     {
         //init stuff
