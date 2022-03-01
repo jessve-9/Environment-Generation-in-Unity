@@ -76,7 +76,7 @@ public class MapGeneratorAuto : MonoBehaviour {
 	// 	falloffMap = FalloffGenerator.GenerateFalloffMap(mapWidth, mapLength);
 	// }
 
-	public void RandomizeOnMapType() {
+	public void RandomizeOnMapType(float heightOffsetElevated, float tiltZ, float tiltX, bool useFalloff) {
 		//if (mapType == MapType.ShortCycle){
         if(true){
 			int mapWidth = 250;
@@ -93,7 +93,7 @@ public class MapGeneratorAuto : MonoBehaviour {
 			float heightOffsetGround = 0f;
 
 			//Elevated ground
-			float heightOffsetElevated = 13f;
+			//float heightOffsetElevated = 13f;
 
 			//Hills
 			float noiseScaleHills = 100f;
@@ -107,9 +107,9 @@ public class MapGeneratorAuto : MonoBehaviour {
             //Random stuff
             Vector2 offsetGround = new Vector2(0,0);
             Vector2 offsetHills = new Vector2(0,0);
-            float tiltZ = 0f;
-	        float tiltX = 0f;
-	        bool useFalloff = true;
+            //float tiltZ = 0f;
+	        //float tiltX = 0f;
+	        //bool useFalloff = true;
             float[,] falloffMap = FalloffGenerator.GenerateFalloffMap(mapWidth, mapLength);
             GenerateMap(mapWidth, mapLength, noiseScaleGround, octavesGround, persistanceGround, lacunarityGround, seedGround, offsetGround,
                             heightMultiplierGround, heightOffsetGround, noiseScaleHills, octavesHills, persistanceHills, lacunarityHills, seedHills,
