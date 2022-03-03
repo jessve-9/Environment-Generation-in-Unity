@@ -18,9 +18,6 @@ public static class CreateMesh
 		//MeshData meshDataGravel = new MeshData (width, length);
         for(int i = 0, z = 0; z<length; z++){
             for(int x = 0; x < width; x++){
-				if(heightMap[x,z] == -1f) {
-					continue;
-				}
                 meshData.vertices[i] = new Vector3(topLeftX+x, heightMap[x,z], topLeftZ-z);
                 meshData.uvs [i] = new Vector2 (x / (float)width, z / (float)length);
 

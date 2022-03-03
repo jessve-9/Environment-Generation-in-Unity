@@ -22,9 +22,9 @@ public class Friction  {
     public static float[,] frictionMap(int mapWidth, int mapLength, float[,] combinedMap, bool map){
 
         int fricSeed = 2;
-        int fricOctaves = 4;
-        float fricPersistance = 4;
-        float fricLacunarity = 4;
+        int fricOctaves = 3;
+        float fricPersistance = 1;
+        float fricLacunarity = 1;
         float fricHeightMultiplier = 1;
         float fricHeightOffset = 0;
         float fricScale = 10; 
@@ -61,10 +61,10 @@ public class Friction  {
     public static float[,] DirtMap(float[,] dirtMap, float[,] fricMap, float[,] combinedMap) {
         for (int z = 0; z < fricMap.GetLength(0); z++) {
             for (int x = 0; x < fricMap.GetLength(1); x++) {
-                if(fricMap[x,z]>0.05) {
+                if(fricMap[x,z]>0.5) {
                     dirtMap[x,z]=combinedMap[x,z];
                 }else {
-                    dirtMap[x,z]=-1f;
+                    dirtMap[x,z]=combinedMap[x,z]-0.1f;
                 }
             }
         }
@@ -74,8 +74,8 @@ public class Friction  {
     public static float[,] GravelMap(float[,] gravelMap, float[,] fricMap, float[,] combinedMap) {
         for (int z = 0; z < fricMap.GetLength(0); z++) {
             for (int x = 0; x < fricMap.GetLength(1); x++) {
-                if(fricMap[x,z]>0.05) {
-                    gravelMap[x,z]=-1f;
+                if(fricMap[x,z]>0.5) {
+                    gravelMap[x,z]=combinedMap[x,z]-0.1f;
                 }else {
                     gravelMap[x,z]=combinedMap[x,z];
                 }
