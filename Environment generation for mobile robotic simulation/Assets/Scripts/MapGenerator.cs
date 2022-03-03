@@ -97,8 +97,38 @@ public class MapGenerator : MonoBehaviour {
 		}
 
 		MapDisplay display = FindObjectOfType<MapDisplay> ();
-		display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength));
 
+		//Friction f = new Friction();
+		//Friction.frictionMap(mapWidth, mapLength, combinedMap);
+
+		//Debug.Log(f.getDirtMap()[0,0]); 
+		//display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), true);
+		display.DrawMesh (CreateMesh.CreateShape (Friction.frictionMap(mapWidth, mapLength, combinedMap, true)), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), true);
+		display.DrawMesh (CreateMesh.CreateShape (Friction.frictionMap(mapWidth, mapLength, combinedMap, false)), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), false);
+
+
+		/*for(int i=0;i<100;i++){
+			if(f.dMap[i]>1) {
+				Debug.Log("IN HERE " + f.dMap[i]);
+			}else if(f.gMap[i]>1) {
+				Debug.Log("IN HERE " + f.gMap[i]);
+			}
+			//Debug.Log("dMap: " + f.dMap[i]);
+			//Debug.Log("gMap: " + f.gMap[i]);
+		}*/
+		
+		
+		/*float mean=0;
+		for(int i=0; i < fMap.GetLength(0) ;i++){
+			for(int j=0; j < fMap.GetLength(1) ;j++){
+				mean = (float)mean + fMap[j,i];
+				
+			}
+		}
+		mean = (float)mean/62500;
+		Debug.Log(fMap.Length);
+		Debug.Log(mean);
+			//Arg 3 is scale, Arg 4 is Offset*/
 	}
 
 	void OnValidate() {
