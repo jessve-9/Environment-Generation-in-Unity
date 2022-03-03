@@ -11,7 +11,10 @@ public static class FalloffGenerator {
 				float x = i / (float)mapWidth * 2 - 1;
 				float z = j / (float)mapLength * 2 - 1;
 
-				float value = Mathf.Max (Mathf.Abs (x), Mathf.Abs (z));
+				float value1 = Mathf.Max (Mathf.Abs (x), Mathf.Abs (z));
+				float value2 = Mathf.Clamp((Mathf.Abs (x) + Mathf.Abs (z))/1.7f, 0, 1);
+				float value = Mathf.Max (value1, value2);
+				
 				map [i, j] = Evaluate(value);
 			}
 		}
