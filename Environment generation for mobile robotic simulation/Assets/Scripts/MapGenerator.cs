@@ -53,6 +53,16 @@ public class MapGenerator : MonoBehaviour {
 	public bool useFalloff;
 	float[,] falloffMap;
 
+	private float[,] dirtMeshMap;
+	private float[,] gravelMeshMap;
+	[Range(0,1)]
+	public float groundVariation = 0.5f;
+
+	/*
+	private float[,] dirtIntervals;		//Used in interval calculation
+	private float[,] gravelIntervals;
+	*/
+
 	public void GenerateMap() {
 
 		if(mapLength <= 0){
@@ -87,48 +97,32 @@ public class MapGenerator : MonoBehaviour {
 		}
 
         Color darkBrown = new Color(0.34f,0.21f,0.08f,1f);
+
         Color grey = new Color(0.24f,0.24f,0.24f,1f);
+		Color grey2 = new Color(0.20f,0.20f,0.20f,1f);			//Grus färg är det tänkt
 
         Color[] colourMap = new Color[scaledMapWidth * scaledMapLength];
+		//Color[] colourMapGravel = new Color[scaledMapWidth * scaledMapLength];
 		for (int z = 0; z < scaledMapLength; z++) {
 			for (int x = 0; x < scaledMapWidth; x++) {
 				colourMap[z*scaledMapWidth+x] = Color.Lerp(darkBrown, grey, (combinedMap[x,z] - heightOffsetGround)/(maxHeight-heightOffsetGround));
+				//colourMapGravel[z*scaledMapWidth+x] = Color.Lerp(grey2, grey, (combinedMap[x,z] - heightOffsetGround)/(maxHeight-heightOffsetGround));
 			}
 		}
 
 		MapDisplay display = FindObjectOfType<MapDisplay> ();
 
-		//Friction f = new Friction();
-		//Friction.frictionMap(mapWidth, mapLength, combinedMap);
-
-		//Debug.Log(f.getDirtMap()[0,0]); 
-		//display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), true);
-		display.DrawMesh (CreateMesh.CreateShape (Friction.frictionMap(mapWidth, mapLength, combinedMap, true)), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), true);
-		display.DrawMesh (CreateMesh.CreateShape (Friction.frictionMap(mapWidth, mapLength, combinedMap, false)), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), false);
-
-
-		/*for(int i=0;i<100;i++){
-			if(f.dMap[i]>1) {
-				Debug.Log("IN HERE " + f.dMap[i]);
-			}else if(f.gMap[i]>1) {
-				Debug.Log("IN HERE " + f.gMap[i]);
-			}
-			//Debug.Log("dMap: " + f.dMap[i]);
-			//Debug.Log("gMap: " + f.gMap[i]);
-		}*/
+		dirtMeshMap = Friction.frictionMap(mapWidth, mapLength, combinedMap, true, groundVariation);
+		gravelMeshMap = Friction.frictionMap(mapWidth, mapLength, combinedMap, false, groundVariation);
 		
-		
-		/*float mean=0;
-		for(int i=0; i < fMap.GetLength(0) ;i++){
-			for(int j=0; j < fMap.GetLength(1) ;j++){
-				mean = (float)mean + fMap[j,i];
-				
-			}
-		}
-		mean = (float)mean/62500;
-		Debug.Log(fMap.Length);
-		Debug.Log(mean);
-			//Arg 3 is scale, Arg 4 is Offset*/
+		/*
+		dirtIntervals = intervalCalc(dirtMeshMap);			//Calculate mesh x cordinate index interval
+		gravelIntervals = intervalCalc(gravelMeshMap);
+		*/
+
+		//display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), true);		//Draws the entire map wtith one material
+		display.DrawMesh (CreateMesh.CreateShape (dirtMeshMap /*, dirtIntervals //future arg for better mesh creation?*/), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), true);
+		display.DrawMesh (CreateMesh.CreateShape (gravelMeshMap /*, gravelIntervals //future arg for better mesh creation?*/), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), false);
 	}
 
 	void OnValidate() {
@@ -181,6 +175,17 @@ public class MapGenerator : MonoBehaviour {
 			heightMultiplierHills = 50f;
 			heightOffsetHills = -23f;
 		}
+	}
+
+	private static float[,] intervalCalc(float[,] mapMesh){
+		int[] xzSavePoint = {0, 0};
+		while(mapMesh[xzSavePoint[0],xzSavePoint[1]]<0){
+			while(mapMesh[xzSavePoint[0],xzSavePoint[1]]<0){
+				xzSavePoint[0] += 1;
+			}
+		xzSavePoint[1] += 1;;
+		}
+		return mapMesh;
 	}
 }
 
