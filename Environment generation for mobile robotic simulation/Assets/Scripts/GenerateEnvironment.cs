@@ -11,10 +11,11 @@ class GenerateEnvironment : MonoBehaviour
         for(int i = 7; i < args.Length; i++){
             //Debug.Log(args[i]);
         }
-        float heightOffsetElevated = float.Parse(args[7]);
-        float tiltZ = float.Parse(args[8]);
-        float tiltX = float.Parse(args[9]);
-        bool useFalloff = bool.Parse(args[10]);
+        int amountOfArgs = 7;
+        float heightOffsetElevated = float.Parse(args[amountOfArgs]);
+        float tiltZ = float.Parse(args[amountOfArgs+1]);
+        float tiltX = float.Parse(args[amountOfArgs+2]);
+        bool useFalloff = bool.Parse(args[amountOfArgs+3]);
         MapGeneratorAuto mapGenerator = new MapGeneratorAuto();
         mapGenerator.RandomizeOnMapType(heightOffsetElevated, tiltZ, tiltX, useFalloff);
         OBJExporter objExporter = new OBJExporter();

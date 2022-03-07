@@ -180,10 +180,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df8ff32530cd27c4184e679925086691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textureRender: {fileID: 0}
-  meshFilter: {fileID: 926742448}
-  meshRenderer: {fileID: 926742447}
-  meshCollider: {fileID: 926742446}
+  textureRenderDirt: {fileID: 926742447}
+  meshFilterDirt: {fileID: 926742448}
+  meshRendererDirt: {fileID: 926742447}
+  meshColliderDirt: {fileID: 926742446}
+  textureRenderGravel: {fileID: 0}
+  meshFilterGravel: {fileID: 0}
+  meshRendererGravel: {fileID: 0}
+  meshColliderGravel: {fileID: 0}
 --- !u!1 &435783629
 GameObject:
   m_ObjectHideFlags: 0
