@@ -4,6 +4,8 @@
 
 This is a project that aims to create random environments that resemble a short loading cycle using Unity.
 
+This project is made in Unity version `2021.2.8f1`. If you have any problems then try using this version.
+
 ---
 
 ## Setup
@@ -21,7 +23,7 @@ This is a project that aims to create random environments that resemble a short 
 4. In the `Map Generator` field you can generate or randomize a new environment. 
 You can also change the values of how it should look but we recommend that you only change the following fields:
 
-`Height Offset Elevated`, `Tilt Z`, `Tilt X` and `Use Falloff`.
+`Height Offset Elevated`, `Tilt Z`, `Tilt X`, `Use Falloff` and `Ground Variation`.
 
 <img src = "images/map_generator.png">
 
@@ -49,7 +51,7 @@ instructions on here: `https://github.com/Unity-Technologies/URDF-Importer`.
 
 ## Automate the process
 
-If you want to be able to run this process in the console then follow the follwing instructions.
+If you want to be able to run this process in the console then do the follwing instructions.
 
 1. Navigate to `C:\Program Files\Unity\Hub\Editor\2021.2.8f1\Editor`.
 

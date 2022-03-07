@@ -49,7 +49,7 @@ public class MapGeneratorAuto : MonoBehaviour {
 		}
 
 		MapDisplay display = FindObjectOfType<MapDisplay> ();
-		display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength));
+		display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), true);
 
 	}
 
