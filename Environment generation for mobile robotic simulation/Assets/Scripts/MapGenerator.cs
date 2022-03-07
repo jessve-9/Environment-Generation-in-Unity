@@ -53,6 +53,16 @@ public class MapGenerator : MonoBehaviour {
 	public bool useFalloff;
 	float[,] falloffMap;
 
+	private float[,] dirtMeshMap;
+	private float[,] gravelMeshMap;
+	[Range(0,1)]
+	public float groundVariation = 0.5f;
+
+	/*
+	private float[,] dirtIntervals;		//Used in interval calculation
+	private float[,] gravelIntervals;
+	*/
+
 	public void GenerateMap() {
 
 		if(mapLength <= 0){
@@ -87,18 +97,32 @@ public class MapGenerator : MonoBehaviour {
 		}
 
         Color darkBrown = new Color(0.34f,0.21f,0.08f,1f);
+
         Color grey = new Color(0.24f,0.24f,0.24f,1f);
+		Color grey2 = new Color(0.20f,0.20f,0.20f,1f);			//Grus färg är det tänkt
 
         Color[] colourMap = new Color[scaledMapWidth * scaledMapLength];
+		//Color[] colourMapGravel = new Color[scaledMapWidth * scaledMapLength];
 		for (int z = 0; z < scaledMapLength; z++) {
 			for (int x = 0; x < scaledMapWidth; x++) {
 				colourMap[z*scaledMapWidth+x] = Color.Lerp(darkBrown, grey, (combinedMap[x,z] - heightOffsetGround)/(maxHeight-heightOffsetGround));
+				//colourMapGravel[z*scaledMapWidth+x] = Color.Lerp(grey2, grey, (combinedMap[x,z] - heightOffsetGround)/(maxHeight-heightOffsetGround));
 			}
 		}
 
 		MapDisplay display = FindObjectOfType<MapDisplay> ();
-		display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength));
 
+		dirtMeshMap = Friction.frictionMap(mapWidth, mapLength, combinedMap, true, groundVariation);
+		gravelMeshMap = Friction.frictionMap(mapWidth, mapLength, combinedMap, false, groundVariation);
+		
+		/*
+		dirtIntervals = intervalCalc(dirtMeshMap);			//Calculate mesh x cordinate index interval
+		gravelIntervals = intervalCalc(gravelMeshMap);
+		*/
+
+		//display.DrawMesh (CreateMesh.CreateShape (combinedMap), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), true);		//Draws the entire map wtith one material
+		display.DrawMesh (CreateMesh.CreateShape (dirtMeshMap /*, dirtIntervals //future arg for better mesh creation?*/), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), true);
+		display.DrawMesh (CreateMesh.CreateShape (gravelMeshMap /*, gravelIntervals //future arg for better mesh creation?*/), TextureGenerator.TextureFromColourMap (colourMap, scaledMapWidth, scaledMapLength), false);
 	}
 
 	void OnValidate() {
@@ -151,6 +175,17 @@ public class MapGenerator : MonoBehaviour {
 			heightMultiplierHills = 50f;
 			heightOffsetHills = -23f;
 		}
+	}
+
+	private static float[,] intervalCalc(float[,] mapMesh){
+		int[] xzSavePoint = {0, 0};
+		while(mapMesh[xzSavePoint[0],xzSavePoint[1]]<0){
+			while(mapMesh[xzSavePoint[0],xzSavePoint[1]]<0){
+				xzSavePoint[0] += 1;
+			}
+		xzSavePoint[1] += 1;;
+		}
+		return mapMesh;
 	}
 }
 

@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class MapDisplay : MonoBehaviour
 {
-    public Renderer textureRender;
-    public MeshFilter meshFilter;
-    public MeshRenderer meshRenderer;
-    public MeshCollider meshCollider;
+    //Dirt
+    public Renderer textureRenderDirt;
+    public MeshFilter meshFilterDirt;
+    public MeshRenderer meshRendererDirt;
+    public MeshCollider meshColliderDirt;
+
+    //Gravel
+    public Renderer textureRenderGravel;
+    public MeshFilter meshFilterGravel;
+    public MeshRenderer meshRendererGravel;
+    public MeshCollider meshColliderGravel;
 
     // public void DrawNoiseMap(float[,] noiseMap){
     //     int width = noiseMap.GetLength(0);
@@ -31,14 +38,23 @@ public class MapDisplay : MonoBehaviour
     // }
 
     public void DrawTexture(Texture2D texture){
-        textureRender.sharedMaterial.mainTexture = texture;
-        textureRender.transform.localScale = new Vector3(texture.width, 1, texture.height);
+        textureRenderDirt.sharedMaterial.mainTexture = texture;
+        textureRenderDirt.transform.localScale = new Vector3(texture.width, 1, texture.height);
     }
 
-    public void DrawMesh(MeshData meshData, Texture2D texture){
-        meshFilter.sharedMesh = meshData.CreateMesh();
-        meshRenderer.sharedMaterial.mainTexture = texture;
-        meshCollider.sharedMesh = null;
-        meshCollider.sharedMesh = meshFilter.sharedMesh;
+    public void DrawMesh(MeshData meshData, Texture2D texture, bool dirtOrGravel){
+        if(dirtOrGravel==true){
+            Debug.Log("dirt");
+            meshFilterDirt.sharedMesh = meshData.CreateMesh();
+            meshRendererDirt.sharedMaterial.mainTexture = texture;
+            meshColliderDirt.sharedMesh = null;
+            meshColliderDirt.sharedMesh = meshFilterDirt.sharedMesh;
+        }else if(dirtOrGravel==false){
+            Debug.Log("gravel");
+            meshFilterGravel.sharedMesh = meshData.CreateMesh();
+            meshRendererGravel.sharedMaterial.mainTexture = texture;
+            meshColliderGravel.sharedMesh = null;
+            meshColliderGravel.sharedMesh = meshFilterGravel.sharedMesh;
+        }
     }    
 }

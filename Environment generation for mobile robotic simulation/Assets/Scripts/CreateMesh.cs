@@ -5,8 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public static class CreateMesh
 {
-    public static MeshData CreateShape(float[,] heightMap){
-        int width = heightMap.GetLength (0);
+    public static MeshData CreateShape(float[,] heightMap/*, float[,] intervals //Future arg for better mesh creation?*/){
+        int width = heightMap.GetLength (0);					
 		int length = heightMap.GetLength (1);
 
         float topLeftX = (width - 1) / -2f;
@@ -15,6 +15,7 @@ public static class CreateMesh
         MeshData meshData = new MeshData (width, length);
         for(int i = 0, z = 0; z<length; z++){
             for(int x = 0; x < width; x++){
+				
                 meshData.vertices[i] = new Vector3(topLeftX+x, heightMap[x,z], topLeftZ-z);
                 meshData.uvs [i] = new Vector2 (x / (float)width, z / (float)length);
 
@@ -22,12 +23,9 @@ public static class CreateMesh
                     meshData.AddTriangle (i, i + width + 1, i + width);
 					meshData.AddTriangle (i + width + 1, i, i + 1);
                 }
-                
                 i++;
             }   
-
         }
-
         return meshData;
     }
 
