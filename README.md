@@ -2,7 +2,7 @@
 
 ---
 
-This is a project from which aims to create random environments that resemble a short loading cycle using Unity.
+This is a project that aims to create random environments that resemble a short loading cycle using Unity.
 
 ---
 
