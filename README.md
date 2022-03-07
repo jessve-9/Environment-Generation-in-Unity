@@ -44,8 +44,8 @@ the scene and do the above step. You also have to select the `Only Selected Obje
 
 ## Import Environment
 
-If you want to import an URDF machine then use the package `URDF importer` which you can find
-instructions on here: `https://github.com/Unity-Technologies/URDF-Importer`.
+If you want to import an URDF machine then use the package `URDF importer`. You can find
+instructions here: `https://github.com/Unity-Technologies/URDF-Importer`.
 
 ---
 
@@ -56,8 +56,11 @@ If you want to be able to run this process in the console then do the follwing i
 1. Navigate to `C:\Program Files\Unity\Hub\Editor\2021.2.8f1\Editor`.
 
 2. Enter in the following command: `.\Unity.exe -batchmode -quit -projectPath 
-"<PROJECTPATH>" -executeMethod GenerateEnvironment.StartGeneration <HEIGHT_OF_HILLS> <TILT_Z_AXLE> <TILT_X_AXLE> <USEFALLOFF>`.
+"<PROJECTPATH>" -executeMethod GenerateEnvironment.StartGeneration -heightOffsetElevated <HEIGHT_OF_HILLS> -tiltZ <TILT_Z_AXLE> -tiltX <TILT_X_AXLE> -useFalloff <USEFALLOFF>`.
 Height and tilt should have the format ("13.0" for example) while the falloff should have the format ("true" or "false").
+
+An example is `.\Unity.exe -batchmode -quit -projectPath "C:\Users\student\Documents\Environment generation for mobile robotic simulation" -executeMethod GenerateEnvironment.StartGeneration 
+-heightOffsetElevated 13.0 -tiltZ 0 -tiltX 0 -useFalloff true`.
 
 3. The environment gets exported to the directory that was last exported to.
 
