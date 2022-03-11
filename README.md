@@ -2,7 +2,10 @@
 
 ---
 
-This is a project that aims to create random environments that resemble a short loading cycle using Unity.
+This project aims to generate a short loading cycle environment in Unity. This environment should be able to
+have special properties such as size, tilt, hill height, ground irregularities and different frictions. 
+The main function is that it is possible to generate a new random terrain at will or modifying an already existing one. 
+It will primarily be used for machine learning but can be attributed to other areas as well.
 
 This project is made in Unity version `2021.2.8f1`. If you have any problems then try using this version.
 
