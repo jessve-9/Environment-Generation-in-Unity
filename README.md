@@ -45,7 +45,7 @@ the scene and do the above step. You also have to select the `Only Selected Obje
 
 ---
 
-## Import Environment
+## Import Robot
 
 If you want to import an URDF machine then use the package `URDF importer`. You can find
 instructions here: `https://github.com/Unity-Technologies/URDF-Importer`.
